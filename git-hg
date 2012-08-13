@@ -34,7 +34,7 @@ map_branch() {
 update_bookmarks() {
     hg_ branches | while read branch rev rest; do
         target=$(map_branch $branch)
-        rev=$(echo $rev | sed -r "s/([0-9]+):.*/\\1/")
+        rev=$(echo $rev | sed -E "s/([0-9]+):.*/\\1/")
         hg_ bookmark -f -r $rev $target
     done
 }
@@ -43,7 +43,7 @@ update_bookmarks() {
 delete_bookmarks() {
     hg_ bookmarks | grep -q 'no bookmarks' && return
     hg_ bookmarks \
-        | sed -r 's/[[:space:]]+(.+?)[[:space:]]+.*/\1/' \
+        | sed -E 's/[[:space:]]+(.+?)[[:space:]]+.*/\1/' \
         | while read bookmark; do hg_ bookmark -d $bookmark; done
 }
 
